@@ -5,10 +5,9 @@ const PORT = process.env.PORT || 3000;
 const con = require('./db/mysql');
 
 // >>>>>>>>>>>>>>>> middleware <<<<<<<<<<<<<<<<
+//app.use(express.json())
+
 app.use(express.json())
-
-
-
 // >>>>>>>>>>>>>>>>  router <<<<<<<<<<<<<<<<<<<<<<<<<<
 const inventoryRoute = require('./router/inventory');
 
