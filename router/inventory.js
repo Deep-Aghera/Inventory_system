@@ -1,11 +1,10 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
+const path = require('path');
 const { copyFileSync } = require('fs');
 const router = new express.Router();
 let fetchData  = require('../PromiseQuery/fetchData');
 const con = require('../db/mysql');
-const { resolve } = require('path');
-const { rejects } = require('assert');
 const fs = require('fs');
 
 
@@ -147,5 +146,10 @@ router.post('/test/inventory/add',fileUpload(), (req,res) => {
     // res.send("ok dokey");
 })
 
+router.get('/inventory/image/:id',(req,res) => {
+    console.log(req.params.id);
+    let pathImg = path.join(__dirname,`../img/${req.params.id}.jpg`)
+    res.sendFile(pathImg);
+})
 
 module.exports = router;
