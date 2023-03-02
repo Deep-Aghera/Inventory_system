@@ -1,11 +1,13 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const path = require('path');
-const { copyFileSync } = require('fs');
+//const { copyFileSync } = require('fs');
 const router = new express.Router();
 let fetchData  = require('../PromiseQuery/fetchData');
 const con = require('../db/mysql');
 const fs = require('fs');
+const { resolve } = require('path');
+const { rejects } = require('assert');
 
 
 
@@ -151,5 +153,22 @@ router.get('/inventory/image/:id',(req,res) => {
     let pathImg = path.join(__dirname,`../img/${req.params.id}.jpg`)
     res.sendFile(pathImg);
 })
+
+
+router.post('/inventory/login',async (req,res) => {
+    console.log("here is credential",req.body);
+    const findQuery = `select * from Persons where email='${req.body.email}';`;
+    console.log(findQuery);
+    const userQuery =new Promise((resolve,rejects) => {
+       con.query(findQuery,(err,result) => {
+        if(err) rejects(err);
+        resolve(result);
+    }) 
+    });
+    let user = await userQuery.then((data) => data).catch((err) => err);
+    console.log(user[0])
+    res.send("login");
+})
+
 
 module.exports = router;
