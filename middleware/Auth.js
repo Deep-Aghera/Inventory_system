@@ -5,12 +5,24 @@ const auth = async (req,res,next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ','');
         const decoded = jwt.verify(token,"justAnSecret");
-        const findQuery = `select * from Persons where id=${decoded.id}`
-        const user = await con.query(findQuery,(error,result) => {
-            if(error) throw Error("somthing mis::::");
-            return result;
+        const findQuery = `select * from Persons where email='${decoded.email}'`
+        const userPromise = new Promise(((resolve,reject) => {
+              con.query(findQuery,(err,result) => {
+            if(err) reject(err);
+            resolve(result)
         })
+        }))
+        let user = await userPromise.then(data => data).catch(err => err)
+        console.log(user[0])
+        if(!user.length) {
+            
+            return res.send("unable to auth");
+        }
+        next();
+        
     } catch (error) {
         
     }
 }
+
+module.exports = auth;

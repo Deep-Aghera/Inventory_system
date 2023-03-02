@@ -8,8 +8,10 @@ const con = require('../db/mysql');
 const fs = require('fs');
 const { resolve } = require('path');
 const { rejects } = require('assert');
+const jwt = require('jsonwebtoken');
 
-
+//                                     middleware
+const auth = require('../middleware/Auth');
 
 let arrayCompare = (requredEelemnt,toBeCheckedElement) => {
    
@@ -166,9 +168,21 @@ router.post('/inventory/login',async (req,res) => {
     }) 
     });
     let user = await userQuery.then((data) => data).catch((err) => err);
+    console.log("before",user.length)
+    if(!user.length) {
+        return res.send("unable to login (no user)");
+    }
+    //console.log(user[0].email)
+    const token = jwt.sign({email : user[0].email }, 'justAnSecret')
+    const decode = jwt.verify(token,'justAnSecret');
+    console.log(token,"<>",decode);
     console.log(user[0])
-    res.send("login");
+    res.send(token);
 })
 
+
+router.get('/inventory/authtest',auth,(req,res) => {
+    res.send("authentication test")
+})
 
 module.exports = router;
