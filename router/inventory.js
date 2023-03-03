@@ -23,7 +23,7 @@ let arrayCompare = (requredEelemnt,toBeCheckedElement) => {
     
 }
 
-router.post('/inventory/add',fileUpload(),async(req,res) => {
+router.post('/inventory/add',auth,fileUpload(),async(req,res) => {
     let requiredItemForAdd = ["product_name","category","quantity","manufacturing_time","inventory_image"];
     console.log("here your ",req.body.product)
     let bodyData = JSON.parse(req.body.product)
@@ -64,7 +64,7 @@ router.post('/inventory/add',fileUpload(),async(req,res) => {
 
 //fetchData('show tables;',con.query).then((data) => {console.log(data)})
 
-router.get('/inventory/search/',async (req,res) => {
+router.get('/inventory/search/',auth,async (req,res) => {
     console.log(req.query)
     let searchQery  = req.query;
     console.log(!searchQery.name,!searchQery.category )
@@ -97,7 +97,7 @@ router.get('/inventory/search/',async (req,res) => {
 })
 
 
-router.delete('/inventory/remove/:id',(req,res) => {
+router.delete('/inventory/remove/:id',auth,(req,res) => {
     console.log(req.params.id);
     let deleteQuery = `delete from Products where Product_id=${req.params.id}`;
     console.log(deleteQuery)
@@ -117,7 +117,7 @@ router.delete('/inventory/remove/:id',(req,res) => {
     res.send("ok delete")
 })
 
-router.patch('/inventory/update/:id',(req,res) => {
+router.patch('/inventory/update/:id',auth,(req,res) => {
     
     let updateQuery = `update Products set Quantity=${req.body.qunatity} where Product_id=${req.params.id}`
     //console.log(req.params.id,updateQ,req.body);
@@ -130,7 +130,7 @@ router.patch('/inventory/update/:id',(req,res) => {
     res.send("update")
 })
 
-router.post('/test/inventory/add',fileUpload(), (req,res) => {
+router.post('/test/inventory/add',auth,fileUpload(), (req,res) => {
     // let requiredItemForAdd = ["product_name","category","quantity","manufacturing_time","inventory_imag"];
     // let body = req.body
     // //let isValidate = arrayCompare(requiredItemForAdd,body)
@@ -150,14 +150,14 @@ router.post('/test/inventory/add',fileUpload(), (req,res) => {
     // res.send("ok dokey");
 })
 
-router.get('/inventory/image/:id',(req,res) => {
+router.get('/inventory/image/:id',auth,(req,res) => {
     console.log(req.params.id);
     let pathImg = path.join(__dirname,`../img/${req.params.id}.jpg`)
     res.sendFile(pathImg);
 })
 
 
-router.post('/inventory/login',async (req,res) => {
+router.post('/inventory/login',auth,async (req,res) => {
     console.log("here is credential",req.body);
     const findQuery = `select * from Persons where email='${req.body.email}';`;
     console.log(findQuery);
